@@ -1,0 +1,4 @@
+env/*
+.terraform/*
+.files/*.zip
+.vscode/*
