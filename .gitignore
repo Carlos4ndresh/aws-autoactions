@@ -2,3 +2,5 @@ env/*
 .terraform/*
 .files/*.zip
 .vscode/*
+terraform.tfstate
+terraform.tfstate.backup
