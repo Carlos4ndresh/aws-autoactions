@@ -16,7 +16,7 @@ variable "slack_channel" {
 }
 
 variable "mandatory_tags" {
-  default     = "TTL,owner"
+  default     = "TTL,owner,Schedule"
   description = "Comma separated string mandatory tag values."
 }
 
