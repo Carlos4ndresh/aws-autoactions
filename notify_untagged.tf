@@ -2,17 +2,17 @@
 resource "aws_lambda_function" "notifyUntaggedInstances" {
   filename         = "./files/notifyUntaggedInstances.zip"
   function_name    = "notifyUntaggedInstances"
-  role             = "${aws_iam_role.lambda_notify.arn}"
+  role             = aws_iam_role.lambda_notify.arn
   handler          = "notifyUntaggedInstances.lambda_handler"
-  source_code_hash = "${filebase64sha256("./files/notifyUntaggedInstances.zip")}"
+  source_code_hash = filebase64sha256("./files/notifyUntaggedInstances.zip")
   runtime          = "python3.6"
   timeout          = "120"
   description      = "Sends a notification message with info about untagged instances."
 
   environment {
     variables = {
-      slackChannel = "${var.slack_channel}"
-      slackHookUrl = "${var.slack_hook_url}"
+      slackChannel = var.slack_channel
+      slackHookUrl = var.slack_hook_url
     }
   }
 }
@@ -26,18 +26,18 @@ resource "aws_cloudwatch_event_rule" "notify_untagged_instances" {
 }
 
 resource "aws_cloudwatch_event_target" "daily_untagged_report" {
-  rule      = "${aws_cloudwatch_event_rule.notify_untagged_instances.name}"
-  target_id = "${aws_lambda_function.notifyUntaggedInstances.function_name}"
-  arn = "${aws_lambda_function.notifyUntaggedInstances.arn}"
+  rule      = aws_cloudwatch_event_rule.notify_untagged_instances.name
+  target_id = aws_lambda_function.notifyUntaggedInstances.function_name
+  arn = aws_lambda_function.notifyUntaggedInstances.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_untagged_instances" {
   statement_id   = "AllowExecutionFromCloudWatch"
   action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.notifyUntaggedInstances.function_name}"
+  function_name  = aws_lambda_function.notifyUntaggedInstances.function_name
   principal      = "events.amazonaws.com"
-  source_arn     = "${aws_cloudwatch_event_rule.notify_untagged_instances.arn}"
+  source_arn     = aws_cloudwatch_event_rule.notify_untagged_instances.arn
   depends_on = [
-    "aws_lambda_function.notifyUntaggedInstances"
+    aws_lambda_function.notifyUntaggedInstances
   ]
 }

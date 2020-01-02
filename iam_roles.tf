@@ -5,41 +5,41 @@ data "aws_caller_identity" "current" {}
 
 # Template for our 'notify' lambda IAM policy
 data "template_file" "iam_lambda_notify" {
-  template = "${file("./files/iam_lambda_notify.tpl")}"
+  template = file("./files/iam_lambda_notify.tpl")
 
   vars = {
-    account_id = "${data.aws_caller_identity.current.account_id}"
-    region = "${var.region}"
+    account_id = data.aws_caller_identity.current.account_id
+    region = var.region
   }
 }
 
 # Template for our 'read_instances' lambda IAM policy
 data "template_file" "iam_lambda_read_instances" {
-  template = "${file("./files/iam_lambda_read_instances.tpl")}"
+  template = file("./files/iam_lambda_read_instances.tpl")
 
   vars = {
-    account_id = "${data.aws_caller_identity.current.account_id}"
-    region = "${var.region}"
+    account_id = data.aws_caller_identity.current.account_id
+    region = var.region
   }
 }
 
 # Template for our 'stop_and_terminate_instances' lambda IAM policy
 data "template_file" "iam_lambda_stop_and_terminate_instances" {
-  template = "${file("./files/iam_lambda_stop_and_terminate_instances.tpl")}"
+  template = file("./files/iam_lambda_stop_and_terminate_instances.tpl")
 
   vars = {
-    account_id = "${data.aws_caller_identity.current.account_id}"
-    region = "${var.region}"
+    account_id = data.aws_caller_identity.current.account_id
+    region = var.region
   }
 }
 
 # Template for our 'terminate_asgs' lambda IAM policy
 data "template_file" "iam_lambda_terminate_asgs" {
-  template = "${file("./files/iam_lambda_terminate_asgs.tpl")}"
+  template = file("./files/iam_lambda_terminate_asgs.tpl")
 
   vars = {
-    account_id = "${data.aws_caller_identity.current.account_id}"
-    region = "${var.region}"
+    account_id = data.aws_caller_identity.current.account_id
+    region = var.region
   }
 }
 
@@ -125,24 +125,24 @@ EOF
 # Here we ingest the template and create the role policies
 resource "aws_iam_role_policy" "lambda_notify_policy" {
 	name = "lambda_notify_policy"
-	policy = "${data.template_file.iam_lambda_notify.rendered}"
-  role = "${aws_iam_role.lambda_notify.id}"
+	policy = data.template_file.iam_lambda_notify.rendered
+  role = aws_iam_role.lambda_notify.id
 }
 
 resource "aws_iam_role_policy" "lambda_read_instances_policy" {
 	name = "lambda_read_instances_policy"
-	policy = "${data.template_file.iam_lambda_read_instances.rendered}"
-  role = "${aws_iam_role.lambda_read_instances.id}"
+	policy = data.template_file.iam_lambda_read_instances.rendered
+  role = aws_iam_role.lambda_read_instances.id
 }
 
 resource "aws_iam_role_policy" "lambda_stop_and_terminate_instances" {
 	name = "lambda_stop_and_terminate_instances"
-	policy = "${data.template_file.iam_lambda_stop_and_terminate_instances.rendered}"
-  role = "${aws_iam_role.lambda_stop_and_terminate_instances.id}"
+	policy = data.template_file.iam_lambda_stop_and_terminate_instances.rendered
+  role = aws_iam_role.lambda_stop_and_terminate_instances.id
 }
 
 resource "aws_iam_role_policy" "lambda_terminate_asgs" {
 	name = "lambda_terminate_asgs"
-	policy = "${data.template_file.iam_lambda_terminate_asgs.rendered}"
-  role = "${aws_iam_role.lambda_terminate_asgs.id}"
+	policy = data.template_file.iam_lambda_terminate_asgs.rendered
+  role = aws_iam_role.lambda_terminate_asgs.id
 }
